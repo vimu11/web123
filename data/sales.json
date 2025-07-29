@@ -1,0 +1,18 @@
+[
+    {
+        "transaction_id": "SALE175379301046768546",
+        "date": "2025-07-29 12:43:30",
+        "items": [
+            {
+                "product_id": "PG",
+                "name": "1",
+                "quantity": 1,
+                "price": 1.99,
+                "item_total": 1.99
+            }
+        ],
+        "total_amount": 1.99,
+        "payment_method": "Cash",
+        "cashier_id": "admin"
+    }
+]
