@@ -1,0 +1,52 @@
+# pos_system/.htaccess
+
+# This file is optional and provides configuration directives for Apache HTTP Server.
+# If you are using Nginx or another web server, you will need to configure
+# equivalent rules in your server's configuration file.
+
+# --- Basic URL Rewriting (Optional) ---
+# Uncomment the following lines if you want to enable URL rewriting
+# to remove .php extensions or create cleaner URLs.
+# Requires mod_rewrite to be enabled on your Apache server.
+
+# RewriteEngine On
+# RewriteBase /pos_system/ # Adjust this if your project is not in a subfolder
+
+# Redirect requests for index.php to the root
+# RewriteRule ^index\.php$ /pos_system/ [R=301,L]
+
+# Remove .php extension from files
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{REQUEST_FILENAME}\.php -f
+# RewriteRule ^([^\.]+)/$ $1.php [L]
+
+# --- Security Enhancements (Recommended) ---
+
+# Prevent directory listing
+Options -Indexes
+
+# Deny access to .json data files directly via browser
+# This is crucial for security since JSON files contain sensitive data.
+<FilesMatch "\.json$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to .bat files (if any were uploaded or left by mistake)
+<FilesMatch "\.bat$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to .htaccess itself
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# --- PHP Settings (Optional) ---
+# You can set some PHP configurations here if needed, e.g., error reporting.
+# php_flag display_errors Off
+# php_value error_reporting 0
+# php_value upload_max_filesize 20M
+# php_value post_max_size 20M
