@@ -37,7 +37,7 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password (from GitHub Secrets)
         # The local directory in your repository to upload from.
         # This assumes your PHP project is inside a folder named 'pos_system' at your repo root.
-        local-dir: ./pos_system/
+        local-dir: ./web123/
         # The remote directory on your cPanel server where your website files should go.
         # This value comes from your GitHub Secret.
         server-directory: ${{ secrets.FTP_REMOTE_PATH }}
