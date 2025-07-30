@@ -14,6 +14,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4 # Action to check out your repository code
 
+        - name: List files for debug
+          run: ls -R
+
       - name: FTP Deploy to cPanel
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0 # Use the FTP Deploy Action
         with:
