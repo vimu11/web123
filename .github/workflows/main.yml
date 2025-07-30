@@ -1,6 +1,6 @@
 # .github/workflows/deploy.yml
 
-name: Deploy to cPanel
+name: Deploy to cPanel # Name of your workflow, displayed in GitHub Actions tab
 
 on:
   push:
@@ -8,41 +8,41 @@ on:
       - main # This workflow will run whenever code is pushed to the 'main' branch
 
 jobs:
-  web-deploy:
-    name: Deploy PHP Application
-    runs-on: ubuntu-latest # Use a fresh Ubuntu environment for each job
+  web-deploy: # Define a job named 'web-deploy'
+    name: Deploy PHP Application # Display name for the job
+    runs-on: ubuntu-latest # Specifies the runner environment (GitHub-hosted Ubuntu)
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4 # Action to checkout your repository code
+    steps: # List of steps to be executed in this job
+    - name: Checkout code # Step 1: Give this step a descriptive name
+      uses: actions/checkout@v4 # This step uses the 'checkout' action to get your repository code
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2 # Action to set up PHP environment
-      with:
+    - name: Setup PHP # Step 2: Set up the PHP environment
+      uses: shivammathur/setup-php@v2 # This step uses the 'setup-php' action
+      with: # Parameters for the 'setup-php' action
         php-version: '8.1' # Specify your PHP version (e.g., 7.4, 8.0, 8.1, etc.)
         extensions: mbstring, pdo, json # Common PHP extensions, adjust as needed
         tools: composer # Install Composer if you plan to use it for dependencies
 
-    - name: Install Composer dependencies
-      # This step is optional. Uncomment if you have a composer.json file
-      # and need to install PHP dependencies before deployment.
-      # run: composer install --no-dev --prefer-dist
+    # - name: Install Composer dependencies # Step 3 (Optional): Install PHP dependencies
+    #   # This step is commented out by default.
+    #   # If you uncomment it, ensure 'run:' is present and correctly indented.
+    #   # This step uses the 'run' key to execute a shell command.
+    #   run: composer install --no-dev --prefer-dist # Command to install Composer dependencies
 
-    - name: Deploy via FTP/SFTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.0 # Action for FTP/SFTP deployment
-      with:
-        server: ${{ secrets.FTP_SERVER }} # Your cPanel server IP or hostname
-        username: ${{ secrets.FTP_USERNAME }} # Your cPanel username
-        password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password
-        # The path on your cPanel server where your website files should go.
-        # This is typically 'public_html/' or 'public_html/your-domain.com/'
-        # or 'public_html/your-subdomain/'
-        # Make sure this path is correct for your cPanel setup.
-        # If your files are in a subfolder like 'pos_system' in your repo,
-        # you might deploy them into a subfolder on the server too.
-        local-dir: ./pos_system/ # The local directory to deploy from (your project root)
-        server-directory: ${{ secrets.FTP_REMOTE_PATH }} # The remote directory on the server
+    - name: Deploy via FTP/SFTP # Step 4: Deploy your files to the server
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.0 # This step uses the 'FTP-Deploy-Action'
+      with: # Parameters for the 'FTP-Deploy-Action'
+        server: ${{ secrets.FTP_SERVER }} # Your cPanel server IP or hostname (from GitHub Secrets)
+        username: ${{ secrets.FTP_USERNAME }} # Your cPanel username (from GitHub Secrets)
+        password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password (from GitHub Secrets)
+        # The local directory in your repository to upload from.
+        # This assumes your PHP project is inside a folder named 'pos_system' at your repo root.
+        local-dir: ./pos_system/
+        # The remote directory on your cPanel server where your website files should go.
+        # This value comes from your GitHub Secret.
+        server-directory: ${{ secrets.FTP_REMOTE_PATH }}
         # Optional: Exclude files/folders you don't want to upload (e.g., .git, node_modules)
+        # Uncomment and adjust this section if you want to exclude specific files.
         # exclude: |
         #   .git/
         #   .github/
