@@ -24,7 +24,7 @@ jobs:
           # Optional inputs:
           port: 21 # Default FTP port. Use 22 for SFTP if your cPanel supports it and you configure it.
           protocol: ftp # Use 'ftp' or 'sftp'. If using 'sftp', ensure port is 22.
-          local-dir: ./vimu11/web123/ # The local directory to deploy from (root of your repo)
+          local-dir: ./web123 # The local directory to deploy from (root of your repo)
           remote-dir: /home/chatdxyj/promptino.site # The remote directory on your cPanel (e.g., public_html, or a subfolder like public_html/my-app)
           # You can add more options like `exclude`, `dry-run`, etc.
           # For example, to exclude .git files:
