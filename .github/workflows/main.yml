@@ -8,7 +8,7 @@ on:
       - main # This workflow will run whenever code is pushed to the 'main' branch
 
 jobs:
-  web-deploy: # Define a job named 'web-deploy'
+  web-deploy: # Define a job named 'web123'
     name: Deploy PHP Application # Display name for the job
     runs-on: ubuntu-latest # Specifies the runner environment (GitHub-hosted Ubuntu)
 
@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v4 # This step uses the 'checkout' action to get your repository code
 
     - name: Setup PHP # Step 2: Set up the PHP environment
-      uses: shivammathur/setup-php@v2 # This step uses the 'setup-php' action
+      uses: vimu11/web123 # This step uses the 'setup-php' action
       with: # Parameters for the 'setup-php' action
         php-version: '8.1' # Specify your PHP version (e.g., 7.4, 8.0, 8.1, etc.)
         extensions: mbstring, pdo, json # Common PHP extensions, adjust as needed
@@ -30,14 +30,16 @@ jobs:
     #   run: composer install --no-dev --prefer-dist # Command to install Composer dependencies
 
     - name: Deploy via FTP/SFTP # Step 4: Deploy your files to the server
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.0 # This step uses the 'FTP-Deploy-Action'
-      with: # Parameters for the 'FTP-Deploy-Action'
+      uses: vimu11/web123 # This step uses the 'web123'
+      with: # Parameters for the 'web123'
         server: ${{ secrets.FTP_SERVER }} # Your cPanel server IP or hostname (from GitHub Secrets)
         username: ${{ secrets.FTP_USERNAME }} # Your cPanel username (from GitHub Secrets)
         password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password (from GitHub Secrets)
-        # The local directory in your repository to upload from.
-        # This assumes your PHP project is inside a folder named 'web123' at your repo root.
-        local-dir: ./web123/
+        # IMPORTANT: Adjust 'local-dir' based on your repository structure.
+        # SCENARIO A: Your PHP project files (index.php, auth.php, etc.) are directly at the root of your GitHub repo.
+        # local-dir: ./
+        # SCENARIO B: Your PHP project files are inside a folder named 'pos_system' at the root of your GitHub repo.
+        local-dir: ./web123/ # Keep this if 'pos_system' folder exists at your repo root.
         # The remote directory on your cPanel server where your website files should go.
         # This value comes from your GitHub Secret.
         server-directory: ${{ secrets.FTP_REMOTE_PATH }}
