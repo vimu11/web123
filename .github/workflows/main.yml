@@ -1,0 +1,55 @@
+# .github/workflows/deploy.yml
+
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main # This workflow will run whenever code is pushed to the 'main' branch
+
+jobs:
+  web-deploy:
+    name: Deploy PHP Application
+    runs-on: ubuntu-latest # Use a fresh Ubuntu environment for each job
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Action to checkout your repository code
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2 # Action to set up PHP environment
+      with:
+        php-version: '8.1' # Specify your PHP version (e.g., 7.4, 8.0, 8.1, etc.)
+        extensions: mbstring, pdo, json # Common PHP extensions, adjust as needed
+        tools: composer # Install Composer if you plan to use it for dependencies
+
+    - name: Install Composer dependencies
+      # This step is optional. Uncomment if you have a composer.json file
+      # and need to install PHP dependencies before deployment.
+      # run: composer install --no-dev --prefer-dist
+
+    - name: Deploy via FTP/SFTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.0 # Action for FTP/SFTP deployment
+      with:
+        server: ${{ secrets.FTP_SERVER }} # Your cPanel server IP or hostname
+        username: ${{ secrets.FTP_USERNAME }} # Your cPanel username
+        password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password
+        # The path on your cPanel server where your website files should go.
+        # This is typically 'public_html/' or 'public_html/your-domain.com/'
+        # or 'public_html/your-subdomain/'
+        # Make sure this path is correct for your cPanel setup.
+        # If your files are in a subfolder like 'pos_system' in your repo,
+        # you might deploy them into a subfolder on the server too.
+        local-dir: ./pos_system/ # The local directory to deploy from (your project root)
+        server-directory: ${{ secrets.FTP_REMOTE_PATH }} # The remote directory on the server
+        # Optional: Exclude files/folders you don't want to upload (e.g., .git, node_modules)
+        # exclude: |
+        #   .git/
+        #   .github/
+        #   node_modules/
+        #   .env
+        #   generate_hashes.php # Definitely exclude this utility file!
+        #   *.json # Be careful with this; you might want to upload data JSONs.
+        #   !data/products.json # Example: include products.json if you excluded all .json
+        #   !data/sales.json
+        #   !data/users.json
