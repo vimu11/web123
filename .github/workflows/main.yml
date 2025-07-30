@@ -1,57 +1,34 @@
-# .github/workflows/deploy.yml
-
-name: Deploy to cPanel # Name of your workflow, displayed in GitHub Actions tab
+name: Deploy to cPanel via FTP
 
 on:
   push:
     branches:
-      - main # This workflow will run whenever code is pushed to the 'main' branch
+      - main # This workflow will run when changes are pushed to the 'main' branch
 
 jobs:
-  web-deploy: # Define a job named 'web123'
-    name: Deploy PHP Application # Display name for the job
-    runs-on: ubuntu-latest # Specifies the runner environment (GitHub-hosted Ubuntu)
+  web-deploy:
+    name: Deploy to cPanel
+    runs-on: ubuntu-latest # Use the latest Ubuntu environment for the job
 
-    steps: # List of steps to be executed in this job
-    - name: Checkout code # Step 1: Give this step a descriptive name
-      uses: actions/checkout@v4 # This step uses the 'checkout' action to get your repository code
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Action to check out your repository code
 
-    - name: Setup PHP # Step 2: Set up the PHP environment
-      uses: vimu11/web123 # This step uses the 'setup-php' action
-      with: # Parameters for the 'setup-php' action
-        php-version: '8.1' # Specify your PHP version (e.g., 7.4, 8.0, 8.1, etc.)
-        extensions: mbstring, pdo, json # Common PHP extensions, adjust as needed
-        tools: composer # Install Composer if you plan to use it for dependencies
-
-    # - name: Install Composer dependencies # Step 3 (Optional): Install PHP dependencies
-    #   # This step is commented out by default.
-    #   # If you uncomment it, ensure 'run:' is present and correctly indented.
-    #   # This step uses the 'run' key to execute a shell command.
-    #   run: composer install --no-dev --prefer-dist # Command to install Composer dependencies
-
-    - name: Deploy via FTP/SFTP # Step 4: Deploy your files to the server
-      uses: vimu11/web123 # This step uses the 'web123'
-      with: # Parameters for the 'web123'
-        server: ${{ secrets.FTP_SERVER }} # Your cPanel server IP or hostname (from GitHub Secrets)
-        username: ${{ secrets.FTP_USERNAME }} # Your cPanel username (from GitHub Secrets)
-        password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password (from GitHub Secrets)
-        # IMPORTANT: Adjust 'local-dir' based on your repository structure.
-        # SCENARIO A: Your PHP project files (index.php, auth.php, etc.) are directly at the root of your GitHub repo.
-        # local-dir: ./
-        # SCENARIO B: Your PHP project files are inside a folder named 'pos_system' at the root of your GitHub repo.
-        local-dir: ./web123/ # Keep this if 'pos_system' folder exists at your repo root.
-        # The remote directory on your cPanel server where your website files should go.
-        # This value comes from your GitHub Secret.
-        server-directory: ${{ secrets.FTP_REMOTE_PATH }}
-        # Optional: Exclude files/folders you don't want to upload (e.g., .git, node_modules)
-        # Uncomment and adjust this section if you want to exclude specific files.
-        # exclude: |
-        #   .git/
-        #   .github/
-        #   node_modules/
-        #   .env
-        #   generate_hashes.php # Definitely exclude this utility file!
-        #   *.json # Be careful with this; you might want to upload data JSONs.
-        #   !data/products.json # Example: include products.json if you excluded all .json
-        #   !data/sales.json
-        #   !data/users.json
+      - name: FTP Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.0 # Use the FTP Deploy Action
+        with:
+          # Required inputs for FTP connection:
+          server: ${{ secrets.FTP_SERVER }} # Your cPanel server address (e.g., yourdomain.com or IP)
+          username: ${{ secrets.FTP_USERNAME }} # Your cPanel username
+          password: ${{ secrets.FTP_PASSWORD }} # Your cPanel password
+          # Optional inputs:
+          port: 21 # Default FTP port. Use 22 for SFTP if your cPanel supports it and you configure it.
+          protocol: ftp # Use 'ftp' or 'sftp'. If using 'sftp', ensure port is 22.
+          local-dir: ./vimu11/web123/ # The local directory to deploy from (root of your repo)
+          remote-dir: /home/chatdxyj/promptino.site # The remote directory on your cPanel (e.g., public_html, or a subfolder like public_html/my-app)
+          # You can add more options like `exclude`, `dry-run`, etc.
+          # For example, to exclude .git files:
+          # exclude: |
+          #   .git/**
+          #   .github/**
+          #   .env
